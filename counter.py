@@ -18,6 +18,7 @@ def segments(record_locator):
             ns['xmlns'] = ns[None]
             ns.pop(None)
         segments = pnr.findall('.//xmlns:ReservationItems//xmlns:FlightSegment', namespaces=ns)
+        travelers = pnr.findall('.//xmlns:CustomerInfo/xmlns:PersonName', namespaces=ns)
     except SabreClientException:
         print client.request_text
         print client.response_text
@@ -26,5 +27,6 @@ def segments(record_locator):
 
 if __name__ == '__main__':
     from lxml import etree
-    pnr = 'MCARCL'
+    pnr = 'YFCDVY'
     r = segments(pnr)
+    #print etree.tostring(r)
