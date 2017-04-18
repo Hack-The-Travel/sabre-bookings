@@ -9,7 +9,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.ERROR)
 
 
 def segments(record_locator):
-    """Returns number of segments in requested PNR"""
+    """Returns number of segments in a given PNR"""
     client = SabreClient(sabre_settings['pos'])
     try:
         pnr = client.pnr(record_locator)
