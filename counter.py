@@ -13,7 +13,7 @@ def calc_bookings(pnr_record_locator):
 
     Number of bookings (sold segments) is multiplication of
     number of itinerary segments and number of travelers.
-    This function doesn't check tickets information.
+    This function doesn't check tickets information, segments statuses, etc.
     """
     client = SabreClient(sabre_settings['pos'])
     try:
@@ -24,7 +24,7 @@ def calc_bookings(pnr_record_locator):
             ns.pop(None)
         segments = pnr.findall('.//xmlns:ReservationItems//xmlns:FlightSegment', namespaces=ns)
         travelers = pnr.findall('.//xmlns:CustomerInfo/xmlns:PersonName', namespaces=ns)
-        bookings = segments*travelers
+        bookings = len(segments)*len(travelers)
     except SabreClientException:
         print client.request_text
         print client.response_text
@@ -32,7 +32,6 @@ def calc_bookings(pnr_record_locator):
     return bookings
 
 if __name__ == '__main__':
-    from lxml import etree
     pnr = 'YFCDVY'
-    r = calc_bookings(pnr)
-    #print etree.tostring(r)
+    print calc_bookings(pnr)
+
