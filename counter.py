@@ -13,6 +13,11 @@ def segments(record_locator):
     client = SabreClient(sabre_settings['pos'])
     try:
         pnr = client.pnr(record_locator)
+        ns = pnr.nsmap
+        if None in ns:
+            ns['xmlns'] = ns[None]
+            ns.pop(None)
+        segments = pnr.findall('.//xmlns:ReservationItems//xmlns:FlightSegment', namespaces=ns)
     except SabreClientException:
         print client.request_text
         print client.response_text
@@ -23,4 +28,3 @@ if __name__ == '__main__':
     from lxml import etree
     pnr = 'MCARCL'
     r = segments(pnr)
-    print etree.tostring(r, pretty_print=True)
