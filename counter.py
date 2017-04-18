@@ -5,6 +5,7 @@ from lxml import etree
 from sabreclient import SabreClient, SabreClientException
 from settings import sabre as sabre_settings
 
+log = logging.getLogger(__name__)
 logging.basicConfig(stream=sys.stdout, level=logging.ERROR)
 
 
@@ -15,6 +16,7 @@ def calc_bookings(pnr_record_locator):
     number of itinerary segments and number of travelers.
     This function doesn't check tickets information, segments statuses, etc.
     """
+    bookings = 0
     client = SabreClient(sabre_settings['pos'])
     try:
         pnr = client.pnr(pnr_record_locator)
@@ -26,12 +28,11 @@ def calc_bookings(pnr_record_locator):
         travelers = pnr.findall('.//xmlns:CustomerInfo/xmlns:PersonName', namespaces=ns)
         bookings = len(segments)*len(travelers)
     except SabreClientException:
-        print client.request_text
-        print client.response_text
-        raise
+        log.error('Cannot calculate bookings in PNR %s' % pnr_record_locator)
+        log.debug('Calculator PNR %s, broken request:\n%s' % (pnr_record_locator, client.request_text))
+        log.debug('Calculator PNR %s, broken response:\n%s' % (pnr_record_locator, client.response_text))
     return bookings
 
 if __name__ == '__main__':
     pnr = 'YFCDVY'
     print calc_bookings(pnr)
-
