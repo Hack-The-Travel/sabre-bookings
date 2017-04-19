@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import logging
+import argparse
 from lxml import etree
 from sabreclient import SabreClient, SabreClientException
 from settings import sabre as sabre_settings
@@ -33,6 +34,13 @@ def calc_bookings(pnr_record_locator):
         log.debug('Calculator PNR %s, broken response:\n%s' % (pnr_record_locator, client.response_text))
     return bookings
 
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('pnr', type=str, help='PNR record locator')
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
-    pnr = 'YFCDVY'
-    print calc_bookings(pnr)
+    args = parse_args()
+    print ','.join([args.pnr, str(calc_bookings(args.pnr))])
